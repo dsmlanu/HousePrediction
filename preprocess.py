@@ -13,12 +13,14 @@ import joblib
 data=pd.read_csv('Housing.csv')
 # Handling missing value
 ## Drop column where more than 50% values are missing because that column is not useful for training
+print(data.columns.tolist())
 data = data.dropna(thresh=len(data) * 0.5, axis=1)
+
 ## Identifying numerical and categorical features
 num_features=data.select_dtypes(include=['int64','float64']).columns.tolist()
 cat_features= data.select_dtypes(include=['object']).columns.tolist()
 ## remove the target feature from the num_features
-num_features.remove('SalePrice')
+num_features.remove('price')
 ##  handling missing value in numerical column
 num_transformer = Pipeline(steps=[
     ("imputer", SimpleImputer(strategy="mean")),  # Fill missing values
@@ -36,8 +38,8 @@ preprocessor = ColumnTransformer(transformers=[
 ])
 
 ## split data into train and test data
-X = data.drop(columns=["SalePrice"])  # Features
-y = data["SalePrice"]  # Target variable
+X = data.drop(columns=["price"])  # Features
+y = data["price"]  # Target variable
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 # fit preprocesor and Transform data
